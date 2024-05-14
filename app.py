@@ -8,7 +8,7 @@ from langchain.vectorstores import chroma
 import tempfile
 
 #sk for openai
-os.environ['OPENAI_API_KEY'] = 'sk-API KEY'
+os.environ['OPENAI_API_KEY'] = ''
 
 #load the desired llm
 llm = OpenAI(temperature=0, model_name="gpt-3.5-turbo-instruct")
@@ -37,26 +37,26 @@ if uploaded_file is not None:
     st.write("Full path of the uploaded file:", temp_file_path)
 
 
-#load pdf file and split pages
-loader = PyPDFLoader(temp_file_path)
-pages = loader.load_and_split()
+    #load pdf file and split pages
+    loader = PyPDFLoader(temp_file_path)
+    pages = loader.load_and_split()
 
-#create embeddings
-embeddings = OpenAIEmbeddings()
+    #create embeddings
+    embeddings = OpenAIEmbeddings()
 
-#load documents into vector database 
-db = chroma.from_documents(pages, embeddings)
+    #load documents into vector database 
+    db = chroma.from_documents(pages, embeddings)
 
-#create LC chain that summarises 
-#the chain type refine generates responses by iterively updating answer by analysing each document
-chain = load_summarize_chain(llm, chain_type="refine")
+    #create LC chain that summarises 
+    #the chain type refine generates responses by iterively updating answer by analysing each document
+    chain = load_summarize_chain(llm, chain_type="refine")
 
-#run the chain
-search = db.similarity_search(" ")
-summary = chain.run(input_documents=search, question="Write a summary of the text.")
+    #run the chain
+    search = db.similarity_search(" ")
+    summary = chain.run(input_documents=search, question="Write a summary of the text.")
 
-#write the output to streamlit
-st.write(summary) 
+    #write the output to streamlit
+    st.write(summary) 
 
     
 
